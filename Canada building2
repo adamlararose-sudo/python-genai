@@ -1,0 +1,45 @@
+import matplotlib.pyplot as plt import matplotlib.patches as patches from matplotlib.backends.backend_pdf import PdfPages
+
+=====================
+
+CONFIGURATION
+
+=====================
+
+lot_w, lot_d = 20.0, 50.0 front_setback, rear_setback = 6.0, 6.0 side_setback = 2.5 build_w = lot_w - 2*side_setback build_d = lot_d - front_setback - rear_setback apt_area = 180.0 apartments_per_floor = 3 col_grid = 6.0
+
+pdf_path = "3Storey_MixedUse_Concept_Canada.pdf" png_typical = "typical_floor_preview_canada.png" png_alts = "alternate_layouts_preview_canada.png" png_struct = "structural_preview_canada.png"
+
+=====================
+
+CREATE PDF
+
+=====================
+
+with PdfPages(pdf_path) as pdf: # Page 1: Site Plan fig, ax = plt.subplots(figsize=(8,12)) ax.set_title("Site Plan - Footprint & Setbacks (20m x 50m lot)") ax.add_patch(patches.Rectangle((0,0), lot_w, lot_d, linewidth=1.2, edgecolor='black', facecolor='none')) ax.add_patch(patches.Rectangle((side_setback, rear_setback), build_w, build_d, linewidth=1.0, edgecolor='blue', facecolor='lightgrey', alpha=0.6)) ax.text(lot_w/2, lot_d+0.6, f"Lot: {lot_w} m x {lot_d} m = {lot_wlot_d:.0f} m²", ha='center') ax.text(lot_w/2, lot_d+0.15, f"Building footprint: {build_w:.2f} m x {build_d:.2f} m = {build_wbuild_d:.1f} m²", ha='center') ax.axis('off') pdf.savefig(fig, bbox_inches='tight'); plt.close(fig)
+
+# Page 2: Ground Floor - 3 Shops + Lift/Stair
+fig, ax = plt.subplots(figsize=(11,8.5))
+ax.set_title("Ground Floor - 3 Equal Shops + Lift/Stair Core")
+ax.add_patch(patches.Rectangle((0,0), build_w, build_d, linewidth=1.0, edgecolor='black', facecolor='none'))
+shop_w = build_w / 3
+for i in range(3):
+    x = i*shop_w
+    ax.add_patch(patches.Rectangle((x,0), shop_w, build_d, linewidth=0.8, edgecolor='green', facecolor='none'))
+    ax.text(x + shop_w/2, build_d - 1.0, f"Shop {i+1}\n~{shop_w*build_d:.0f} m²", ha='center', va='top', fontsize=9, fontweight='bold')
+core_w, core_h = 4.0, 8.0
+core_x, core_y = (build_w - core_w)/2, build_d/2 - core_h/2
+ax.add_patch(patches.Rectangle((core_x, core_y), core_w, core_h, edgecolor='red', facecolor='none', linewidth=0.9))
+ax.text(core_x+core_w/2, core_y+core_h/2, "Stair\n+ Lift", ha='center', va='center', fontsize=8)
+ax.axis('off')
+pdf.savefig(fig, bbox_inches='tight'); plt.close(fig)
+
+# Page 3: Typical Upper Floor - Apartments
+fig, ax = plt.subplots(figsize=(11,8.5))
+ax.set_title("Typical Residential Floor - 3 × 180 m² Apartments")
+ax.add_patch(patches.Rectangle((0,0), build_w, build_d, linewidth=1.0, edgecolor='black', facecolor='none'))
+corridor_w = 2.0
+apt_w = (build_w - corridor_w)/3
+for i in range(3):
+    x = i*apt_w if i==0 else (i*apt_w if i
+
